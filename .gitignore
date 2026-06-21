@@ -1,0 +1,28 @@
+# Environment secrets
+.env
+
+# Python virtual environment
+.venv/
+venv/
+
+# Docker volumes and data
+chroma-data/
+hf_cache/
+chroma_db/
+
+# Docker compose override (local modifications)
+docker-compose.override.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Model files (they will be re-downloaded at deploy time)
+*.bin
+*.pt
+*.h5

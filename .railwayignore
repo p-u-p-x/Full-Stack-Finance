@@ -1,0 +1,16 @@
+.env
+.venv/
+venv/
+chroma-data/
+hf_cache/
+chroma_db/
+docker-compose.override.yml
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+*.pyo
+*.bin
+*.pt
+*.h5
+.idea/

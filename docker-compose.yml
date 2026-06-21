@@ -1,0 +1,75 @@
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8002:8000"
+    networks:
+      - app-network
+    volumes:
+      - chroma-data:/chroma/chroma
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - HTTP_PROXY=
+      - HTTPS_PROXY=
+      - http_proxy=
+      - https_proxy=
+      - no_proxy=*
+      # Force the official Hugging Face Hub endpoint. If your .env file
+      # has its own HF_ENDPOINT line (e.g. a regional mirror), that one
+      # wins via env_file — check .env if downloads keep failing.
+      - HF_ENDPOINT=https://huggingface.co
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+      - XDG_CACHE_HOME=/root/.cache
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      # Comma-separated list of allowed frontend origins in production,
+      # e.g. https://app.example.com. "*" is fine for local dev only.
+      - CORS_ORIGINS=*
+      # tiny | base | small | medium — smaller = faster transcription on
+      # CPU, larger = more accurate. Drop to "tiny" or "small" if speed
+      # matters more than accuracy for your earnings calls.
+      - WHISPER_MODEL_SIZE=base
+    depends_on:
+      - chromadb
+    networks:
+      - app-network
+    volumes:
+      # No ./backend:/app bind mount on purpose — for a deployable build,
+      # the image should be self-contained with exactly what was COPY'd
+      # and pip-installed at build time, not overwritten by whatever is
+      # on the host. This volume only persists the model cache so models
+      # don't re-download on every container restart.
+      - model-cache:/root/.cache
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - BACKEND_URL=http://backend:8000
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  chroma-data:
+  model-cache:
