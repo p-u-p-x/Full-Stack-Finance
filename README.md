@@ -1,6 +1,6 @@
-# 💹 Full Stack Finance — AI-Powered Earnings Intelligence Platform
+# 💵 Full Stack Finance — AI-Powered Earnings Intelligence Platform
 
-![Python](https://img.shields.io/badge/Python-3.11-3776AB) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688) ![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-FF4B4B) ![FinBERT](https://img.shields.io/badge/FinBERT-Sentiment-8B7CF6) ![Whisper](https://img.shields.io/badge/Whisper-Transcription-0288D1) ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED) ![HuggingFace](https://img.shields.io/badge/HuggingFace-Spaces-FFD21E) ![LLaMA](https://img.shields.io/badge/Groq-LLaMA%203.1-FF6B35)
+![Python](https://img.shields.io/badge/Python-3.11-2E8B57) ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-00695C) ![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-FF6F61) ![FinBERT](https://img.shields.io/badge/FinBERT-Sentiment-4B0082) ![Whisper](https://img.shields.io/badge/Whisper-Transcription-1E90FF) ![Docker](https://img.shields.io/badge/Docker-Containerized-004C99) ![HuggingFace](https://img.shields.io/badge/HuggingFace-Spaces-FFD700) ![LLaMA](https://img.shields.io/badge/Groq-LLaMA%203.1-32CD32)
 
 ---
 
@@ -34,34 +34,34 @@ Full Stack Finance is a production-ready earnings intelligence platform that pro
 ## 🏗️ Architecture
 
 ```text
-           User (Browser)
-                |
-                v
-+-------------------------------+
-|   Streamlit Frontend          |  Port 7860 (HuggingFace) / 8501 (local)
-|   frontend/app.py             |  10-page dark dashboard, Plotly charts
-+---------------+---------------+
-                |  HTTP REST calls
-                v
-+-------------------------------+
-|   FastAPI Backend             |  Port 8000 (internal)
-|   backend/main.py             |
-|                               |
-|  /analyze   -> full pipeline  |
-|  /transcribe-> Whisper STT    |
-|  /ask       -> RAG Q&A        |
-|  /factcheck -> yfinance       |
-|  /generate-brief -> LLaMA     |
-|  /export-brief   -> PDF       |
-+------+------+--------+--------+
-       |      |        |
-       v      v        v
-   spaCy   FinBERT  ChromaDB
-   NER     Sentiment  Vectors
-       |      |        |
-       v      v        v
-   yfinance  Groq    faster-whisper
-   (live)  LLaMA 3.1   (base int8)
+                                           User (Browser)
+                                                 |
+                                                 v
+                                 +-------------------------------+
+                                 |   Streamlit Frontend          |  Port 7860 (HuggingFace) / 8501 (local)
+                                 |   frontend/app.py             |  10-page dark dashboard, Plotly charts
+                                 +---------------+---------------+
+                                                 |  HTTP REST calls
+                                                 v
+                                 +-------------------------------+
+                                 |   FastAPI Backend             |  Port 8000 (internal)
+                                 |   backend/main.py             |
+                                 |                               |
+                                 |  /analyze   -> full pipeline  |
+                                 |  /transcribe-> Whisper STT    |
+                                 |  /ask       -> RAG Q&A        |
+                                 |  /factcheck -> yfinance       |
+                                 |  /generate-brief -> LLaMA     |
+                                 |  /export-brief   -> PDF       |
+                                 +---+--------+-------------+----+
+                                     |        |             |
+                                     v        v             v
+                                   spaCy    FinBERT     ChromaDB
+                                    NER    Sentiment     Vectors
+                                     |        |             |
+                                     v        v             v
+                                 yfinance    Groq     faster-whisper
+                                  (live)   LLaMA 3.1   (base int8)
 ```
 
 On Hugging Face Spaces, both services run inside one Docker container.
